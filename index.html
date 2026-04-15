@@ -1,410 +1,318 @@
 <!DOCTYPE html>
-<html lang="vi"><head><meta charset="UTF-8"><title>Course Builder v2 - Workflow</title>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Course-Skill-Builder — Workflow v2</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0b0f;--bg2:#12141a;--bg3:#1a1c24;--bg4:#22242e;
-  --bd:#2a2d3a;--bd2:#363948;
-  --tx:#e8e8ec;--tx2:#9a9cb0;--tx3:#6b6d82;
-  --teal:#2dd4bf;--blue:#60a5fa;--purple:#a78bfa;--amber:#f59e0b;
-  --coral:#fb7185;--green:#4ade80;--orange:#fb923c;--pink:#ec4899;
-  --teal-bg:rgba(45,212,191,.08);--blue-bg:rgba(96,165,250,.08);
-  --purple-bg:rgba(167,139,250,.08);--amber-bg:rgba(245,158,11,.08);
-  --coral-bg:rgba(251,113,133,.08);--green-bg:rgba(74,222,128,.08);
-  --orange-bg:rgba(251,146,60,.08);--pink-bg:rgba(236,72,153,.08)}
-body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;
-  font-size:13px;line-height:1.55;padding:28px 16px;min-height:100vh}
-.container{max-width:1000px;margin:0 auto}
-header{text-align:center;padding:28px 20px;margin-bottom:24px;
-  background:linear-gradient(135deg,var(--bg2),var(--bg3));
-  border:1px solid var(--bd);border-radius:16px;position:relative;overflow:hidden}
-header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
-  background:radial-gradient(circle at 30% 50%,rgba(45,212,191,.15),transparent 50%),
-  radial-gradient(circle at 70% 50%,rgba(167,139,250,.15),transparent 50%);pointer-events:none}
-.badge{display:inline-block;background:var(--teal-bg);color:var(--teal);
-  border:1px solid rgba(45,212,191,.3);padding:3px 14px;border-radius:20px;
-  font-family:monospace;font-size:11px;font-weight:600;margin-bottom:12px;position:relative}
-h1{font-family:monospace;font-size:22px;font-weight:700;position:relative}
-h1 span{color:var(--teal)}
-.subtitle{color:var(--tx2);margin-top:6px;font-size:12px;position:relative}
-.stats{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;position:relative}
-.stat{background:var(--bg);border:1px solid var(--bd);padding:5px 12px;border-radius:8px;font-family:monospace;font-size:11px}
-.stat b{color:var(--tx)}
+  :root{
+    --bg:#0b1020; --card:#141b30; --line:#1f2a44; --ink:#e7ecf7; --mute:#9aa5bf;
+    --brand:#6a8cff; --accent:#7ef3c5; --warn:#ffb86b; --danger:#ff6b88;
+    --gemini:#4285f4; --claude:#b85cff; --ck:#00d4aa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(160deg,#0b1020 0%,#141b30 100%);color:var(--ink);font-family:'SF Pro Display',-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6}
+  .wrap{max-width:1200px;margin:0 auto;padding:48px 24px}
+  header{text-align:center;padding:40px 20px 24px}
+  h1{font-size:42px;margin:0 0 8px;background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--mute);font-size:18px}
+  .badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+  .badge{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600}
+  .b-gemini{background:rgba(66,133,244,.15);color:#7fa9ff;border:1px solid rgba(66,133,244,.35)}
+  .b-claude{background:rgba(184,92,255,.15);color:#d48eff;border:1px solid rgba(184,92,255,.35)}
+  .b-ck{background:rgba(0,212,170,.15);color:#5eead4;border:1px solid rgba(0,212,170,.4)}
+  .b-warn{background:rgba(255,184,107,.15);color:var(--warn);border:1px solid rgba(255,184,107,.4)}
+  h2{font-size:28px;margin:48px 0 16px;color:var(--accent);border-left:4px solid var(--accent);padding-left:14px}
+  h3{font-size:19px;margin:24px 0 10px;color:var(--brand)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:14px 0}
+  .grid{display:grid;gap:14px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media (max-width:900px){.g3,.g2{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;margin:12px 0;font-size:14px}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#1a2340;color:var(--accent);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#182138}
+  code{background:#0b1020;padding:2px 8px;border-radius:4px;color:var(--accent);font-size:13px;font-family:'SF Mono',Consolas,monospace}
+  pre{background:#0b1020;border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto;font-size:13px}
+  pre code{background:transparent;padding:0;color:var(--ink)}
+  .step{display:flex;gap:16px;align-items:flex-start;padding:16px;border-left:3px solid var(--brand);background:#182138;border-radius:0 10px 10px 0;margin:10px 0}
+  .step.ck{border-left-color:var(--ck)}
+  .step.mand{border-left-color:var(--danger)}
+  .step-num{flex:0 0 40px;height:40px;border-radius:50%;background:var(--brand);color:#0b1020;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
+  .step.ck .step-num{background:var(--ck);color:#0b1020}
+  .step.mand .step-num{background:var(--danger)}
+  .step-body{flex:1;min-width:0}
+  .step-title{font-weight:700;font-size:16px;margin-bottom:4px}
+  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle}
+  .t-mand{background:var(--danger);color:#fff}
+  .t-rec{background:var(--warn);color:#0b1020}
+  .t-cond{background:var(--brand);color:#0b1020}
+  .callout{background:linear-gradient(135deg,rgba(255,107,136,.12),rgba(255,184,107,.12));border:1px solid rgba(255,107,136,.4);border-radius:10px;padding:16px;margin:16px 0}
+  .callout.good{background:linear-gradient(135deg,rgba(126,243,197,.1),rgba(0,212,170,.1));border-color:rgba(126,243,197,.4)}
+  .callout-title{font-weight:700;margin-bottom:6px;font-size:15px}
+  .analogy{background:#182138;border-radius:12px;padding:4px;margin:12px 0}
+  .analogy th{background:#203052}
+  .analogy td{padding:14px}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;margin-right:4px}
+  .p-gem{background:rgba(66,133,244,.18);color:#7fa9ff}
+  .p-cl{background:rgba(184,92,255,.18);color:#d48eff}
+  .p-ck{background:rgba(0,212,170,.18);color:#5eead4}
+  footer{text-align:center;padding:40px 0 20px;color:var(--mute);font-size:13px}
+  .tl-dr{background:linear-gradient(135deg,rgba(106,140,255,.1),rgba(126,243,197,.08));border:1px solid var(--brand);border-radius:14px;padding:24px;margin:32px 0}
+</style>
+</head>
+<body>
 
-/* Pipeline overview */
-.pipeline{display:flex;align-items:center;justify-content:center;gap:0;
-  margin-bottom:28px;flex-wrap:wrap;padding:14px 0}
-.pipe-node{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0}
-.pipe-circle{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-family:monospace;font-size:12px;font-weight:700;
-  border:2px solid;transition:all .3s}
-.pipe-circle:hover{transform:scale(1.15)}
-.pipe-circle.p0{background:var(--teal-bg);color:var(--teal);border-color:rgba(45,212,191,.4)}
-.pipe-circle.p1{background:var(--blue-bg);color:var(--blue);border-color:rgba(96,165,250,.4)}
-.pipe-circle.p2{background:var(--purple-bg);color:var(--purple);border-color:rgba(167,139,250,.4)}
-.pipe-circle.p3{background:var(--amber-bg);color:var(--amber);border-color:rgba(245,158,11,.4)}
-.pipe-circle.p4{background:var(--green-bg);color:var(--green);border-color:rgba(74,222,128,.4)}
-.pipe-label{font-size:11px;color:var(--tx3);font-weight:500;white-space:nowrap}
-.pipe-arrow{width:30px;height:2px;background:var(--bd2);position:relative;margin:0 -1px;margin-bottom:18px}
-.pipe-arrow::after{content:'';position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:6px solid var(--bd2)}
-
-/* Decision banner */
-.decision-banner{background:linear-gradient(135deg,var(--pink-bg),var(--purple-bg));
-  border:1px solid rgba(236,72,153,.3);border-radius:12px;padding:16px 20px;margin-bottom:24px}
-.decision-title{font-size:13px;font-weight:700;color:var(--pink);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.decision-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-.decision-card{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 12px}
-.dc-condition{font-size:11px;color:var(--tx2);margin-bottom:4px}
-.dc-pipeline{font-family:monospace;font-size:12px;font-weight:700;margin-bottom:3px}
-.dc-a{color:var(--blue)}.dc-b{color:var(--amber)}.dc-c{color:var(--coral)}
-.dc-reason{font-size:10px;color:var(--tx3);font-style:italic}
-
-/* Phase cards */
-.phase{margin-bottom:22px}
-.phase-card{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden}
-.phase-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
-.phase-card.p0::before{background:var(--teal)}
-.phase-card.p1::before{background:var(--blue)}
-.phase-card.p2::before{background:var(--purple)}
-.phase-card.p3::before{background:var(--amber)}
-.phase-card.p4::before{background:var(--green)}
-.phase-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.phase-num{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:13px;font-weight:700;flex-shrink:0}
-.phase-title{font-size:15px;font-weight:700}
-.phase-sub{font-size:11px;color:var(--tx2);margin-top:2px}
-
-/* Steps */
-.steps{display:flex;flex-direction:column;gap:8px}
-.step{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:var(--bg3);border-radius:8px;border:1px solid transparent;transition:all .2s}
-.step:hover{border-color:var(--bd2);background:var(--bg4)}
-.step-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px}
-.step-content{flex:1;min-width:0}
-.step-title{font-size:12px;font-weight:600;color:var(--tx)}
-.step-desc{font-size:11px;color:var(--tx2);margin-top:2px;line-height:1.5}
-.step-cmd{font-family:monospace;font-size:10px;font-weight:600;display:inline-block;padding:2px 7px;border-radius:4px;margin-top:4px}
-
-/* Pipeline split */
-.pipeline-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-@media(max-width:760px){.pipeline-split{grid-template-columns:1fr}}
-.pipe-box{padding:14px;border-radius:10px;border:1px solid}
-.pipe-box.a{background:var(--blue-bg);border-color:rgba(96,165,250,.3)}
-.pipe-box.b{background:var(--amber-bg);border-color:rgba(245,158,11,.3)}
-.pipe-box-title{font-size:12px;font-weight:700;margin-bottom:8px;font-family:monospace}
-.pipe-box.a .pipe-box-title{color:var(--blue)}
-.pipe-box.b .pipe-box-title{color:var(--amber)}
-.pipe-box-badge{display:inline-block;font-size:9px;padding:1px 6px;border-radius:3px;margin-left:6px;font-weight:700}
-.pipe-box.a .pipe-box-badge{background:rgba(96,165,250,.2);color:var(--blue)}
-.pipe-box.b .pipe-box-badge{background:rgba(245,158,11,.2);color:var(--amber)}
-
-/* Connector */
-.connector{display:flex;justify-content:center;padding:6px 0}
-.conn-arrow{width:2px;height:20px;background:var(--bd2);position:relative}
-.conn-arrow::after{content:'';position:absolute;bottom:-1px;left:-4px;border:5px solid transparent;border-top:6px solid var(--bd2)}
-
-/* Token savings */
-.savings-section{background:linear-gradient(135deg,var(--green-bg),var(--teal-bg));
-  border:1px solid rgba(74,222,128,.3);border-radius:12px;padding:18px 20px;margin-top:24px}
-.savings-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.savings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
-.savings-card{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px}
-.sv-strategy{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:2px}
-.sv-amount{font-family:monospace;font-size:11px;color:var(--green);font-weight:700}
-.sv-when{font-size:10px;color:var(--tx3);margin-top:2px}
-
-/* Knowledge retention */
-.retention-section{background:linear-gradient(135deg,var(--coral-bg),var(--pink-bg));
-  border:1px solid rgba(251,113,133,.3);border-radius:12px;padding:18px 20px;margin-top:16px}
-.retention-title{font-size:13px;font-weight:700;color:var(--coral);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.retention-list{display:flex;flex-direction:column;gap:6px}
-.ret-item{display:flex;gap:10px;padding:8px 11px;background:var(--bg);border-radius:7px}
-.ret-num{width:22px;height:22px;border-radius:50%;background:var(--coral-bg);color:var(--coral);
-  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;border:1px solid rgba(251,113,133,.4)}
-.ret-text{font-size:11px;color:var(--tx);flex:1}
-.ret-text b{color:var(--coral)}
-
-footer{text-align:center;margin-top:32px;padding:16px;color:var(--tx3);font-size:11px}
-footer code{font-family:monospace;color:var(--teal)}
-</style></head><body><div class="container">
+<div class="wrap">
 
 <header>
-<div class="badge">/course-builder v2 &middot; UPGRADED</div>
-<h1>Course <span>→</span> Claude Skill</h1>
-<div class="subtitle">SRT / PDF / DOCX / XLSX &rarr; Lazy-loading Skill with Gemini batch pipeline</div>
-<div class="stats">
-<div class="stat"><b>2</b> pipelines</div>
-<div class="stat"><b>5</b> phases</div>
-<div class="stat"><b>90%</b> token savings</div>
-<div class="stat"><b>85-90%</b> retention</div>
-</div></header>
+  <h1>📚 Course-Skill-Builder</h1>
+  <div class="sub">Khóa học → Claude Skill · Workflow v2 với CK Flow bắt buộc</div>
+  <div class="badges">
+    <span class="badge b-gemini">🔵 Gemini: distill + OCR</span>
+    <span class="badge b-claude">🟣 Claude: orchestrate only</span>
+    <span class="badge b-ck">🟢 CK: mandatory gates</span>
+    <span class="badge b-warn">⚠️ Không skip Phase 4</span>
+  </div>
+</header>
 
-<!-- Pipeline overview nodes -->
-<div class="pipeline">
-<div class="pipe-node"><div class="pipe-circle p0">P0</div><div class="pipe-label">Plan + Scan</div></div>
-<div class="pipe-arrow"></div>
-<div class="pipe-node"><div class="pipe-circle p1">P1</div><div class="pipe-label">Concat</div></div>
-<div class="pipe-arrow"></div>
-<div class="pipe-node"><div class="pipe-circle p2">P2</div><div class="pipe-label">Distill</div></div>
-<div class="pipe-arrow"></div>
-<div class="pipe-node"><div class="pipe-circle p3">P3</div><div class="pipe-label">Generate</div></div>
-<div class="pipe-arrow"></div>
-<div class="pipe-node"><div class="pipe-circle p4">P4</div><div class="pipe-label">Ship</div></div>
-</div>
-
-<!-- Decision Tree -->
-<div class="decision-banner">
-<div class="decision-title">🔀 DECISION TREE &mdash; Chọn Pipeline theo Size khóa</div>
-<div class="decision-grid">
-<div class="decision-card">
-<div class="dc-condition">≤ 10 modules VÀ &lt; 500k chars</div>
-<div class="dc-pipeline dc-a">Pipeline A (Claude)</div>
-<div class="dc-reason">Nhỏ, nhanh, Claude quality cao</div>
-</div>
-<div class="decision-card">
-<div class="dc-condition">&gt; 10 modules HOẶC &gt; 500k chars</div>
-<div class="dc-pipeline dc-b">Pipeline B (Gemini)</div>
-<div class="dc-reason">Tránh crash context, tiết kiệm 90% token</div>
-</div>
-<div class="decision-card">
-<div class="dc-condition">Flat folder &gt; 200 files</div>
-<div class="dc-pipeline dc-c">Cluster trước</div>
-<div class="dc-reason">Phân nhóm theo keyword từ filename</div>
-</div>
-</div>
+<!-- TOKEN ROUTING -->
+<h2>🎯 Nguyên tắc Token Routing</h2>
+<div class="card">
+<table>
+<tr><th>Loại input</th><th>Chạy qua</th><th>Lý do</th></tr>
+<tr><td>SRT / DOCX / XLSX / text-PDF</td><td><span class="pill p-gem">Gemini</span> distill batch</td><td>Free 1,500 req/ngày. Claude quá đắt cho bulk text.</td></tr>
+<tr><td>Image-PDF / FireShot / ảnh scan</td><td><span class="pill p-gem">Gemini</span> OCR API</td><td>Vision free tier. Claude vision tốn ×30 token.</td></tr>
+<tr><td>Orchestration / SKILL.md / review</td><td><span class="pill p-cl">Claude</span></td><td>Logic phức tạp, cần reasoning.</td></tr>
+<tr><td>Pipeline C (Claude OCR parallel)</td><td><span class="pill p-cl">Claude</span> Extra Usage</td><td><b>OPT-IN only</b>. Gemini hết quota + user xác nhận.</td></tr>
+</table>
 </div>
 
-<!-- PHASE 0 -->
-<div class="phase"><div class="phase-card p0">
-<div class="phase-header">
-<div class="phase-num" style="background:var(--teal-bg);color:var(--teal);border:1px solid rgba(45,212,191,.3)">0</div>
-<div>
-<div class="phase-title" style="color:var(--teal)">Plan + Scan + Audit</div>
-<div class="phase-sub">Hiểu khóa, scan file, chọn pipeline</div>
-</div>
-</div>
-<div class="steps">
-<div class="step"><div class="step-icon" style="background:var(--teal-bg)">💬</div><div class="step-content">
-<div class="step-title">Hỏi 4 câu</div>
-<div class="step-desc">Khóa dạy gì? EN/VI? Dùng để làm gì? Rủi ro gì?</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--teal-bg)">📋</div><div class="step-content">
-<div class="step-title">Plan + Scan folder</div>
-<div class="step-desc">/ck:plan → scan-modules.py → generate-tree.py → HTML preview</div>
-<div class="step-cmd" style="background:var(--teal-bg);color:var(--teal)">/ck:plan + scan-modules.py</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--pink-bg)">🎯</div><div class="step-content">
-<div class="step-title">Audit: Đếm file types</div>
-<div class="step-desc">SRT + DOCX + XLSX + PDF (text vs image-PDF standalone) → quyết định pipeline</div>
-</div></div>
-</div>
-</div></div>
-
-<div class="connector"><div class="conn-arrow"></div></div>
-
-<!-- PHASE 1 -->
-<div class="phase"><div class="phase-card p1">
-<div class="phase-header">
-<div class="phase-num" style="background:var(--blue-bg);color:var(--blue);border:1px solid rgba(96,165,250,.3)">1</div>
-<div>
-<div class="phase-title" style="color:var(--blue)">Concat (Gom Text)</div>
-<div class="phase-sub">Một concat file per module/cluster</div>
-</div>
-</div>
-<div class="steps">
-<div class="step"><div class="step-icon" style="background:var(--blue-bg)">📄</div><div class="step-content">
-<div class="step-title">concat-module.py — auto xử lý all formats</div>
-<div class="step-desc">
-SRT: bỏ timestamp → text<br>
-DOCX: paragraphs + tables<br>
-XLSX: CSV-like<br>
-PDF: text-based OK, <b>auto-skip FireShot image-PDFs</b>
-</div>
-<div class="step-cmd" style="background:var(--blue-bg);color:var(--blue)">python concat-module.py --path X --limit 400000</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--amber-bg)">🧩</div><div class="step-content">
-<div class="step-title">Clustering (nếu flat &gt;200 files)</div>
-<div class="step-desc">Regex filename → 15-20 topic clusters → concat từng cluster</div>
-</div></div>
-</div>
-</div></div>
-
-<div class="connector"><div class="conn-arrow"></div></div>
-
-<!-- PHASE 2 - 2 Pipelines -->
-<div class="phase"><div class="phase-card p2">
-<div class="phase-header">
-<div class="phase-num" style="background:var(--purple-bg);color:var(--purple);border:1px solid rgba(167,139,250,.3)">2</div>
-<div>
-<div class="phase-title" style="color:var(--purple)">Distill ⭐ Key Phase</div>
-<div class="phase-sub">Raw text → structured data file (85-90% knowledge)</div>
-</div>
+<!-- CK FLOW TABLE -->
+<h2>🟢 ClaudeKit Flow — BẮT BUỘC mỗi phase</h2>
+<div class="callout">
+  <div class="callout-title">⚠️ Rule sắt</div>
+  Thiếu 1 CK gate MANDATORY = skill chưa ship. Không có "manual pass" thay thế. User yêu cầu skip → TỪ CHỐI.
 </div>
 
-<div class="pipeline-split">
-<!-- Pipeline A -->
-<div class="pipe-box a">
-<div class="pipe-box-title">📘 Pipeline A <span class="pipe-box-badge">Small ≤10</span></div>
-<div style="font-size:11px;color:var(--tx2);line-height:1.7">
-<b>Chạy trong Claude session</b><br>
-- Load <code>distill-prompt.md</code><br>
-- Đọc concat → write data/*.md<br>
-- /ck:sequential-thinking nếu phức tạp<br>
-- /ck:fix nếu distill yếu<br><br>
-<b style="color:var(--blue)">✓ Quality cao (Claude)</b><br>
-<b style="color:var(--coral)">✗ Tốn token session</b><br>
-<b style="color:var(--coral)">✗ Chỉ 5-7 modules/session</b>
-</div>
+<div class="card">
+<table>
+<tr><th>Phase</th><th>CK skills MANDATORY</th><th>CK khi cần</th></tr>
+<tr><td><b>0. Plan + Scan</b></td><td><span class="pill p-ck">/ck:plan</span></td><td>/ck:brainstorm (pipeline ambiguous)</td></tr>
+<tr><td>1. Concat</td><td>—</td><td>—</td></tr>
+<tr><td>2. Distill</td><td>—</td><td>/ck:sequential-thinking, /ck:fix</td></tr>
+<tr><td>2.5. OCR</td><td>—</td><td>/ck:ai-multimodal</td></tr>
+<tr><td><b>2.7. Coverage</b></td><td><span class="pill p-ck">coverage-audit.py</span></td><td>—</td></tr>
+<tr><td><b>3. Generate</b></td><td><span class="pill p-ck">/ck:code-review</span></td><td>/ck:simplify (SKILL.md >500 dòng)</td></tr>
+<tr><td><b>4. Ship</b></td><td><span class="pill p-ck">/ck:scenario</span> → <span class="pill p-ck">/ck:skill-creator</span> → <span class="pill p-ck">/ck:security</span> → <span class="pill p-ck">/ck:watzup</span></td><td>/ck:autoresearch (description yếu)</td></tr>
+</table>
 </div>
 
-<!-- Pipeline B -->
-<div class="pipe-box b">
-<div class="pipe-box-title">🚀 Pipeline B <span class="pipe-box-badge">Large &gt;10 ⭐</span></div>
-<div style="font-size:11px;color:var(--tx2);line-height:1.7">
-<b>Gemini batch — background</b><br>
-<code style="font-size:10px">distill-batch.py --input-dir X --model gemini-2.5-flash</code><br><br>
-- Auto skip-existing (resume)<br>
-- Free 1,500 req/day<br>
-- ~5-10 phút/module<br>
-- 30 modules = ~3-4h background<br><br>
-<b style="color:var(--green)">✓ Tiết kiệm 90% token Claude</b><br>
-<b style="color:var(--green)">✓ Bạn không ngồi chờ</b><br>
-<b style="color:var(--green)">✓ Scale to any size</b>
-</div>
-</div>
+<!-- PHASES -->
+<h2>📋 Các Phase chi tiết</h2>
+
+<div class="step ck">
+  <div class="step-num">0</div>
+  <div class="step-body">
+    <div class="step-title">PLAN + SCAN <span class="tag t-mand">MANDATORY /ck:plan</span></div>
+    4 câu hỏi user (dạy gì, mục đích skill, ưu tiên, rủi ro) → <code>scan-modules.py</code> → decision tree chọn pipeline → <code>/ck:plan</code> lưu <code>plans/</code>.
+  </div>
 </div>
 
-<div class="steps" style="margin-top:12px">
-<div class="step"><div class="step-icon" style="background:var(--coral-bg)">🔎</div><div class="step-content">
-<div class="step-title">Quality checks sau batch</div>
-<div class="step-desc">Data file &lt;2KB → fail → re-run. Sample 2-3 files → verify có [NEVILLE QUOTE], frameworks, examples</div>
-</div></div>
-</div>
-</div></div>
-
-<div class="connector"><div class="conn-arrow"></div></div>
-
-<!-- PHASE 3 -->
-<div class="phase"><div class="phase-card p3">
-<div class="phase-header">
-<div class="phase-num" style="background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,.3)">3</div>
-<div>
-<div class="phase-title" style="color:var(--amber)">Generate SKILL.md</div>
-<div class="phase-sub">Lazy-loading map + index</div>
-</div>
-</div>
-<div class="steps">
-<div class="step"><div class="step-icon" style="background:var(--amber-bg)">📝</div><div class="step-content">
-<div class="step-title">Điền placeholders</div>
-<div class="step-desc">
-{DESCRIPTION} · {LAZY_LOADING_TABLE} · {EXPRESS_STAGES}<br>
-{CORE_FRAMEWORKS} · {REFERENCE_EXAMPLES}
-</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--amber-bg)">🎯</div><div class="step-content">
-<div class="step-title">Tối ưu lazy-loading (quan trọng)</div>
-<div class="step-desc">
-- 1 keyword → load đúng 1 data file<br>
-- Data file ≤ 1,500 dòng (load full khi match)<br>
-- Tạo <code>data/00-index.md</code> ngắn → Claude đọc index trước → chọn file
-</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--purple-bg)">🔍</div><div class="step-content">
-<div class="step-title">/ck:code-review</div>
-<div class="step-desc">Review SKILL.md → user confirm</div>
-</div></div>
-</div>
-</div></div>
-
-<div class="connector"><div class="conn-arrow"></div></div>
-
-<!-- PHASE 4 -->
-<div class="phase"><div class="phase-card p4">
-<div class="phase-header">
-<div class="phase-num" style="background:var(--green-bg);color:var(--green);border:1px solid rgba(74,222,128,.3)">4</div>
-<div>
-<div class="phase-title" style="color:var(--green)">Ship</div>
-<div class="phase-sub">Validate → score → package</div>
-</div>
-</div>
-<div class="steps">
-<div class="step"><div class="step-icon" style="background:var(--green-bg)">🎯</div><div class="step-content">
-<div class="step-title">/ck:scenario → 5-8 eval test cases</div>
-<div class="step-desc">evals/evals.json</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--green-bg)">✅</div><div class="step-content">
-<div class="step-title">/ck:skill-creator</div>
-<div class="step-desc">Validate + package. Score thấp → /ck:autoresearch optimize</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--coral-bg)">🛡️</div><div class="step-content">
-<div class="step-title">/ck:security</div>
-<div class="step-desc">STRIDE + OWASP, target ≥ 80%</div>
-</div></div>
-<div class="step"><div class="step-icon" style="background:var(--orange-bg)">📦</div><div class="step-content">
-<div class="step-title">/ck:watzup</div>
-<div class="step-desc">Final review, checklist sẵn sàng. Target composite ≥ 85%</div>
-</div></div>
-</div>
-</div></div>
-
-<!-- Token Savings -->
-<div class="savings-section">
-<div class="savings-title">💰 Token Savings Strategies</div>
-<div class="savings-grid">
-<div class="savings-card">
-<div class="sv-strategy">Gemini batch thay Claude distill</div>
-<div class="sv-amount">~90% token</div>
-<div class="sv-when">Pipeline B</div>
-</div>
-<div class="savings-card">
-<div class="sv-strategy">Skip image-PDFs (không distill rác)</div>
-<div class="sv-amount">~20% concat size</div>
-<div class="sv-when">Auto trong concat-module.py</div>
-</div>
-<div class="savings-card">
-<div class="sv-strategy">Clustering trước distill</div>
-<div class="sv-amount">~50% redundancy</div>
-<div class="sv-when">Flat folders &gt;200 files</div>
-</div>
-<div class="savings-card">
-<div class="sv-strategy">Data file ≤ 1500 dòng</div>
-<div class="sv-amount">Load 1 file đủ answer</div>
-<div class="sv-when">Phase 3 design</div>
-</div>
-<div class="savings-card">
-<div class="sv-strategy">Index file ngắn (00-index.md)</div>
-<div class="sv-amount">Tra cứu nhanh</div>
-<div class="sv-when">Skill runtime</div>
-</div>
-<div class="savings-card">
-<div class="sv-strategy">Skip re-distill (resume)</div>
-<div class="sv-amount">Không mất tiến độ</div>
-<div class="sv-when">distill-batch.py</div>
-</div>
-</div>
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <div class="step-title">CONCAT</div>
+    <code>concat-module.py</code> gom SRT/DOCX/XLSX/text-PDF theo module. Auto-skip image-PDF. Output <code>{slug}.txt</code>.
+  </div>
 </div>
 
-<!-- Knowledge Retention -->
-<div class="retention-section">
-<div class="retention-title">📚 Đảm bảo 85-90% Knowledge Retention</div>
-<div class="retention-list">
-<div class="ret-item"><div class="ret-num">1</div><div class="ret-text">
-<b>Audit trước build:</b> Count text-readable vs image-PDFs. Note standalone PDFs để OCR sau
-</div></div>
-<div class="ret-item"><div class="ret-num">2</div><div class="ret-text">
-<b>Distill prompt:</b> Giữ nguyên [NEVILLE QUOTE], examples tiếng gốc, target 800-1500 dòng, "Key Takeaways" cuối file
-</div></div>
-<div class="ret-item"><div class="ret-num">3</div><div class="ret-text">
-<b>Sau batch:</b> Sample 2-3 files → verify frameworks + examples. Weak → re-run với gemini-2.5-pro
-</div></div>
-<div class="ret-item"><div class="ret-num">4</div><div class="ret-text">
-<b>PDF image-based:</b> Flag → OCR sau với /ck:ai-multimodal. Ưu tiên: templates, swipe files, subject line banks → Skill v2
-</div></div>
-<div class="ret-item"><div class="ret-num">5</div><div class="ret-text">
-<b>Eval test (Phase 4):</b> 5-8 câu hỏi từ khóa → verify skill trả lời đúng frameworks
-</div></div>
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <div class="step-title">DISTILL <span class="tag" style="background:var(--gemini);color:#fff">Gemini</span></div>
+    Pipeline A (≤10 modules, trong Claude) hoặc Pipeline B (batch <code>distill-batch.py</code> via gemini-2.5-flash). Script idempotent → resume được. Mỗi module 5-10 phút, 30 modules ~3-4h background.
+  </div>
 </div>
+
+<div class="step">
+  <div class="step-num">2.5</div>
+  <div class="step-body">
+    <div class="step-title">OCR image-PDFs <span class="tag" style="background:var(--gemini);color:#fff">Gemini API</span></div>
+    <code>ocr-pdfs-api.py --priority</code> cho templates/swipes. Subagent ghi <b>TEMP staging</b> (không có quyền ghi ~/.claude/). Pipeline C Claude = <b>OPT-IN only</b>.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2.6</div>
+  <div class="step-body">
+    <div class="step-title">FINALIZE OCR</div>
+    <code>finalize-ocr.py</code> copy TEMP → <code>data/ocr/</code> + rebuild <code>AUTO-OCR-INDEX</code> trong <code>00-index.md</code>.
+  </div>
+</div>
+
+<div class="step mand">
+  <div class="step-num">2.7</div>
+  <div class="step-body">
+    <div class="step-title">COVERAGE AUDIT <span class="tag t-mand">MANDATORY GATE</span></div>
+    <code>coverage-audit.py --threshold 30 --fail-on-flag</code>. Flag folder &gt; threshold% unprocessed → FAIL. Phải quay lại OCR hoặc note skip rõ ràng.
+  </div>
+</div>
+
+<div class="step ck">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <div class="step-title">GENERATE SKILL.md <span class="tag t-mand">MANDATORY /ck:code-review</span></div>
+    Điền template → <code>/ck:code-review</code>. Nếu &gt;500 dòng → <code>/ck:simplify</code>. Tối ưu lazy-loading: 1 keyword → 1 file.
+  </div>
+</div>
+
+<!-- PHASE 4 SHIP - DETAILED -->
+<h2>🚢 PHASE 4 — SHIP (7 steps bắt buộc)</h2>
+<div class="callout">
+  <div class="callout-title">❌ KHÔNG có override</div>
+  User nói "skip đi cho nhanh" → Reply: <i>"Course-builder quy định Phase 4 là mandatory gate. Chạy đủ 7 steps mới ship. Không có override."</i>
+</div>
+
+<div class="step mand">
+  <div class="step-num">4.1</div>
+  <div class="step-body">
+    <div class="step-title">Coverage Gate <span class="tag t-mand">MANDATORY</span></div>
+    <code>coverage-audit.py --fail-on-flag</code> = exit 0. Nếu fail → quay về 2.5 OCR thêm.
+  </div>
+</div>
+
+<div class="step mand">
+  <div class="step-num">4.2</div>
+  <div class="step-body">
+    <div class="step-title">/ck:scenario <span class="tag t-mand">MANDATORY</span></div>
+    Generate eval cases theo 12 dimensions. Append vào <code>evals/evals.json</code>. Gate: ≥ 10 cases (knowledge + trigger + refusal + injection + ethics).
+  </div>
+</div>
+
+<div class="step mand">
+  <div class="step-num">4.3</div>
+  <div class="step-body">
+    <div class="step-title">/ck:skill-creator (validate + package) <span class="tag t-mand">MANDATORY</span></div>
+    <code>quick_validate.py</code> → "Skill is valid!" + <code>package_skill.py</code> tạo zip. Trước khi package: xóa file rác (.rar, .zip cũ, tmp_*, backup).
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4.4</div>
+  <div class="step-body">
+    <div class="step-title">Parallel Eval Grading <span class="tag t-rec">RECOMMENDED</span></div>
+    <code>prep-evals-parallel.py</code> + N subagents background. Nhanh hơn sequential 5-10×. Accuracy target ≥ 85%.
+  </div>
+</div>
+
+<div class="step mand">
+  <div class="step-num">4.5</div>
+  <div class="step-body">
+    <div class="step-title">/ck:security STRIDE audit <span class="tag t-mand">MANDATORY</span></div>
+    Target ≥ 80%. Nếu thấp → apply 3 fix mặc định (data integrity + file access + ethical limits) → re-audit → re-package.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4.6</div>
+  <div class="step-body">
+    <div class="step-title">/ck:autoresearch (description) <span class="tag t-cond">CONDITIONAL</span></div>
+    Chỉ chạy khi description &lt; 250 chars HOẶC trigger test &lt; 80%. Skip nếu đã pushy đủ.
+  </div>
+</div>
+
+<div class="step mand">
+  <div class="step-num">4.7</div>
+  <div class="step-body">
+    <div class="step-title">/ck:watzup final checklist <span class="tag t-mand">MANDATORY</span></div>
+    Review all changes. Confirm ready-to-ship. Warning còn → fix → re-run.
+  </div>
+</div>
+
+<div class="callout good">
+  <div class="callout-title">✅ Composite Score</div>
+  <code>final = accuracy × 0.8 + security × 0.2</code> · Target <b>≥ 85%</b>. Dưới ngưỡng → loop 4.2 → 4.5.
+</div>
+
+<!-- PLAIN ANALOGY TABLE -->
+<h2>🍰 Tóm tắt nôm na — Làm bánh vs Build Skill</h2>
+<div class="card analogy">
+<table>
+<tr><th style="width:18%">Phase</th><th style="width:32%">Như làm bánh</th><th style="width:50%">Build skill là</th></tr>
+<tr>
+  <td><b>0. Plan</b></td>
+  <td>Coi công thức, đếm trứng bột, chọn lò nướng phù hợp.</td>
+  <td>Scan folder, đếm SRT/PDF, chọn Pipeline A/B, lập plan bằng <code>/ck:plan</code>.</td>
+</tr>
+<tr>
+  <td><b>1. Concat</b></td>
+  <td>Gom nguyên liệu vào tô — bột riêng, đường riêng.</td>
+  <td>Gom SRT/DOCX/XLSX của từng module vào 1 file <code>.txt</code>.</td>
+</tr>
+<tr>
+  <td><b>2. Distill</b></td>
+  <td>Nấu chảy bơ, đánh bột mịn — Gemini làm phụ bếp rẻ tiền.</td>
+  <td>Gemini distill 30 modules/batch → file <code>data/*.md</code>. Claude không đụng vào.</td>
+</tr>
+<tr>
+  <td><b>2.5. OCR</b></td>
+  <td>Đọc công thức chép tay → đánh máy lại. Ảnh scan = Gemini OCR.</td>
+  <td>Image-PDF qua Gemini OCR. Claude chỉ xài khi Gemini hết quota + user đồng ý.</td>
+</tr>
+<tr>
+  <td><b>2.6. Finalize</b></td>
+  <td>Chuyển bánh từ nồi phụ sang khay chính.</td>
+  <td>Copy TEMP → skill folder + cập nhật index.</td>
+</tr>
+<tr>
+  <td><b>2.7. Coverage</b></td>
+  <td>Đếm lại: thiếu bơ, đường không? Thiếu thì quay lại chợ.</td>
+  <td>Audit folder nào OCR chưa đủ → quay lại làm thêm.</td>
+</tr>
+<tr>
+  <td><b>3. Generate</b></td>
+  <td>Tạo hình bánh, trang trí — đây là lúc Claude làm chính bếp.</td>
+  <td>Claude viết SKILL.md + <code>/ck:code-review</code> kiểm tra.</td>
+</tr>
+<tr>
+  <td><b>4. Ship</b></td>
+  <td><b>Kiểm tra chất lượng trước khi giao khách</b> — 7 bước không được bỏ.</td>
+  <td>7 CK gates: scenario → validate → package → security → watzup. Thiếu 1 = không giao.</td>
+</tr>
+</table>
+</div>
+
+<div class="card analogy">
+<h3 style="margin-top:0">💡 Tại sao không được skip Phase 4?</h3>
+<table>
+<tr><th>Nếu skip…</th><th>Hậu quả thực tế</th></tr>
+<tr><td>Skip <code>/ck:scenario</code></td><td>Không test edge case → user gửi prompt injection là skill lộ hết data/</td></tr>
+<tr><td>Skip <code>/ck:skill-creator</code></td><td>Không có zip → không share được → skill "trong đầu" mình thôi</td></tr>
+<tr><td>Skip <code>/ck:security</code></td><td>SCOPE LOCK có lỗ hổng → skill dạy viết MLM, phishing được</td></tr>
+<tr><td>Skip <code>/ck:watzup</code></td><td>Không có final check → sót file rác (như vụ <code>.rar</code> lọt vào zip neville-copywriting)</td></tr>
+</table>
+</div>
+
+<!-- TL;DR -->
+<div class="tl-dr">
+<h3 style="margin-top:0;color:var(--accent)">🎯 TL;DR cho lần build khóa sau</h3>
+<ol style="margin:10px 0 0 20px;padding:0">
+<li><b>Gemini làm text + OCR.</b> Claude KHÔNG đọc raw PDF/image.</li>
+<li><b>Pipeline C Claude OCR = OPT-IN.</b> Luôn hỏi user trước.</li>
+<li><b>Phase 2.7 coverage audit là gate cứng</b> — fail là không đi tiếp.</li>
+<li><b>Phase 4 có 7 steps</b>, 5 MANDATORY, 1 RECOMMENDED, 1 CONDITIONAL.</li>
+<li><b>Xóa file rác</b> trước khi <code>package_skill.py</code> (không zip .rar/.zip cũ vào).</li>
+<li><b>Composite ≥ 85%</b> mới được ship. Không lower ngưỡng.</li>
+<li><b>User nói "skip" → TỪ CHỐI</b> theo script có sẵn trong SKILL.md.</li>
+</ol>
 </div>
 
 <footer>
-Built by <code>/course-builder v2</code> &middot; Claude + Gemini hybrid pipeline &middot; Token-efficient
+  Course-Skill-Builder v2 · Cập nhật 2026-04-15 · CK flow mandatory gates
 </footer>
 
-</div></body></html>
+</div>
+</body>
+</html>

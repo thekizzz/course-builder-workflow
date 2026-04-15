@@ -77,6 +77,119 @@
   </div>
 </header>
 
+<!-- HOW TO USE -->
+<h2>🚀 Cách dùng skill này để build skill mới</h2>
+
+<div class="callout good">
+  <div class="callout-title">📌 Prerequisites (1 lần setup)</div>
+  <ol style="margin:6px 0 0 20px;padding:0">
+    <li>Python 3.10+ cài sẵn: <code>C:/Users/ADMIN/AppData/Local/Programs/Python/Python310/python.exe</code></li>
+    <li>Gemini CLI login (OAuth, 1,000 req/day): <code>gemini auth login</code></li>
+    <li>Gemini API key (cho OCR, 1,500 req/day): lấy tại <a href="https://aistudio.google.com/app/apikey" style="color:var(--brand)">aistudio.google.com/app/apikey</a> → lưu vào <code>~/.claude/skills/ai-multimodal/.env</code> dưới dạng <code>GEMINI_API_KEY=AIza...</code></li>
+    <li>Course folder sẵn sàng — SRT/PDF/DOCX/XLSX đầy đủ</li>
+  </ol>
+</div>
+
+<h3>Bước 1 — Invoke skill</h3>
+<pre><code>/course-builder neville-copywriting --path "D:/Courses/KopywritingKourse"</code></pre>
+<p class="sub" style="margin:6px 0">Claude sẽ bắt đầu Phase 0: hỏi 4 câu + scan folder.</p>
+
+<h3>Bước 2 — Trả lời 4 câu Phase 0</h3>
+<div class="card" style="padding:16px">
+<table>
+<tr><th style="width:30%">Claude hỏi</th><th>Bạn trả lời ví dụ</th></tr>
+<tr><td>Khóa học dạy gì? EN hay VI?</td><td>"Copywriting, giảng viên nói EN"</td></tr>
+<tr><td>Skill dùng để làm gì?</td><td>"Tra cứu nhanh + viết email/sales page"</td></tr>
+<tr><td>Module nào ưu tiên?</td><td>"Email Writing + Cold Email templates"</td></tr>
+<tr><td>Có rủi ro gì không?</td><td>"Nhiều FireShot PDF screenshots"</td></tr>
+</table>
+</div>
+
+<h3>Bước 3 — Confirm pipeline</h3>
+<p>Claude scan xong → show tree HTML → đề xuất Pipeline A/B/C. Bạn chỉ cần OK.</p>
+<div class="card" style="padding:14px">
+<pre><code>Scan kết quả: 36 modules, 782k chars, 486 image-PDFs
+→ Pipeline B (Gemini batch) + OCR priority
+Tree preview: /tmp/tree.html
+OK chưa?</code></pre>
+</div>
+
+<h3>Bước 4 — Để Claude chạy background (~3-4 giờ)</h3>
+<div class="card" style="padding:14px">
+<ul style="margin:0;padding-left:20px">
+<li><b>Concat</b> (Phase 1): ~5 phút — script gom file</li>
+<li><b>Distill</b> (Phase 2): 3-4 giờ — Gemini batch 30+ modules, background, <b>không chờ</b></li>
+<li><b>OCR</b> (Phase 2.5): 1-2 giờ — chỉ templates/swipes (Priority)</li>
+<li><b>Finalize + Coverage</b> (2.6, 2.7): ~2 phút</li>
+</ul>
+<p style="margin:10px 0 0;color:var(--mute);font-size:13px">→ Trong lúc chờ, bạn làm việc khác. Script idempotent — ngắt giữa chừng thì chạy lại cùng lệnh, tự skip file đã xong.</p>
+</div>
+
+<h3>Bước 5 — Claude viết SKILL.md (Phase 3)</h3>
+<p>Tự động điền template + <code>/ck:code-review</code>. Bạn review → approve.</p>
+
+<h3>Bước 6 — Phase 4 SHIP (bắt buộc đủ 7 steps)</h3>
+<div class="card" style="padding:14px">
+<pre><code># 4.1 Coverage audit (gate)
+python -X utf8 scripts/coverage-audit.py --fail-on-flag
+
+# 4.2 Generate eval cases
+/ck:scenario [skill-name] — ≥ 10 cases
+
+# 4.3 Validate + package
+python -X utf8 ~/.claude/skills/skill-creator/scripts/quick_validate.py [skill-path]
+python -X utf8 ~/.claude/skills/skill-creator/scripts/package_skill.py [skill-path]
+
+# 4.4 Parallel eval (recommended)
+python -X utf8 scripts/prep-evals-parallel.py --skill-dir [...]
+
+# 4.5 Security audit (≥ 80%)
+/ck:security Audit skill [...] — STRIDE + OWASP LLM
+
+# 4.6 Autoresearch (nếu description yếu)
+/ck:autoresearch Optimize description [...]
+
+# 4.7 Final review
+/ck:watzup Review all changes</code></pre>
+</div>
+
+<h3>Bước 7 — Skill sẵn sàng</h3>
+<div class="card" style="padding:14px">
+<ul style="margin:0;padding-left:20px">
+<li><b>Source:</b> <code>~/.claude/skills/&lt;skill-name&gt;/</code></li>
+<li><b>Zip share:</b> <code>~/.claude/skills/skill-creator/&lt;skill-name&gt;.zip</code></li>
+<li><b>Dùng ngay:</b> Gõ trigger keywords → skill tự activate</li>
+<li><b>Junction vào workspace:</b> <code>mklink /J ".claude/skills/&lt;name&gt;" "C:/Users/ADMIN/.claude/skills/&lt;name&gt;"</code> (edit 2 chiều)</li>
+</ul>
+</div>
+
+<!-- ESTIMATE TIME -->
+<h3>⏱️ Ước tính thời gian</h3>
+<div class="card">
+<table>
+<tr><th>Size khóa</th><th>Modules</th><th>Chars</th><th>Image-PDFs</th><th>Total time</th></tr>
+<tr><td>Nhỏ (Pipeline A)</td><td>≤ 10</td><td>≤ 500k</td><td>≤ 50</td><td>~1 giờ</td></tr>
+<tr><td>Vừa (Pipeline B)</td><td>15-30</td><td>500k-1M</td><td>50-200</td><td>~3-5 giờ</td></tr>
+<tr><td>Lớn (Pipeline B + cluster)</td><td>30+ hoặc flat &gt;200 files</td><td>&gt; 1M</td><td>200-500+</td><td>~6-10 giờ</td></tr>
+</table>
+<p style="margin:10px 0 0;color:var(--mute);font-size:13px">Hầu hết thời gian là <b>chờ Gemini batch background</b>. Thời gian bạn thực sự ngồi làm: ~30 phút (Phase 0 + review Phase 3 + Phase 4).</p>
+</div>
+
+<!-- COMMON ISSUES -->
+<h3>🔧 Sự cố thường gặp</h3>
+<div class="card">
+<table>
+<tr><th>Triệu chứng</th><th>Cách xử</th></tr>
+<tr><td>Gemini quota hết giữa chừng</td><td>Chờ reset 24h → chạy lại <code>distill-batch.py</code>, script auto-skip file đã xong</td></tr>
+<tr><td><code>UnicodeEncodeError</code> khi path có tiếng Việt</td><td>Luôn dùng <code>python -X utf8</code></td></tr>
+<tr><td>Subagent "permission denied" khi ghi <code>~/.claude/</code></td><td>Đúng. Dùng TEMP staging → <code>finalize-ocr.py</code> copy về</td></tr>
+<tr><td>Zip có file rác (<code>.rar</code>, backup)</td><td>Xóa file rác trong skill folder → re-run <code>package_skill.py</code></td></tr>
+<tr><td>Security score &lt; 80%</td><td>Apply 3 rules: data integrity + file access + ethical limits → re-audit</td></tr>
+<tr><td>Data file &lt; 2KB (distill fail)</td><td>Re-run module đó với <code>--input</code>/<code>--output</code> cụ thể</td></tr>
+<tr><td>Claude session 5h limit</td><td>Extra Usage nếu bật. KHÔNG tự switch Pipeline C — phải hỏi user</td></tr>
+</table>
+</div>
+
 <!-- TOKEN ROUTING -->
 <h2>🎯 Nguyên tắc Token Routing</h2>
 <div class="card">

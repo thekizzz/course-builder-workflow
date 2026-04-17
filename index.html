@@ -125,11 +125,21 @@
 </table>
 </div>
 
-<h3>Bước 3 — Confirm pipeline</h3>
-<p>Claude scan xong → show tree HTML → đề xuất Pipeline A/B/C. Bạn chỉ cần OK.</p>
-<div class="card" style="padding:14px">
-<pre><code>Scan kết quả: 36 modules, 782k chars, 486 image-PDFs
-→ Pipeline B (Gemini batch) + OCR priority
+<h3>Bước 3 — Chọn cách làm (Pipeline)</h3>
+<p>Claude scan xong → đề xuất Pipeline A hoặc B theo bảng dưới. Bạn chỉ cần OK.</p>
+<div class="card">
+<table>
+<tr><th style="width:22%">Khóa to cỡ nào</th><th style="width:32%">Chọn cách nào</th><th>Vì sao</th></tr>
+<tr><td>≤ 10 module <b>và</b> ≤ 500k chữ</td><td><b>Pipeline A</b> — Claude tự làm hết</td><td>Nhỏ, chạy 1 lần nhanh. Không cần bật Gemini.</td></tr>
+<tr><td>11–30 module <b>hoặc</b> 500k–1M chữ</td><td><b>Pipeline B</b> — giao Gemini làm nền</td><td>Claude đọc nhiều file raw sẽ crash. Gemini free 1,500 req/ngày gánh phần thô.</td></tr>
+<tr><td>&gt; 30 module <b>hoặc</b> folder phẳng &gt; 200 file</td><td><b>Pipeline B + phân nhóm trước</b></td><td>Folder quá phẳng phải chia cụm theo keyword (email, sales, ads…) mới distill hiệu quả.</td></tr>
+<tr><td>Nằm giữa (10–15 module, 300–500k chữ)</td><td>Hỏi <code>/ck:brainstorm</code></td><td>Cả 2 pipeline đều được → để Claude cân nhắc quality vs thời gian.</td></tr>
+</table>
+</div>
+<div class="card" style="padding:14px;margin-top:10px">
+<pre><code>Ví dụ Claude đề xuất:
+Scan kết quả: 36 modules, 782k chars, 486 image-PDFs
+→ Pipeline B (Gemini batch) + OCR ưu tiên templates
 Tree preview: /tmp/tree.html
 OK chưa?</code></pre>
 </div>
@@ -207,6 +217,35 @@ python -X utf8 scripts/prep-evals-parallel.py --skill-dir [...]
 <tr><td>Security score &lt; 80%</td><td>Apply 3 rules: data integrity + file access + ethical limits → re-audit</td></tr>
 <tr><td>Data file &lt; 2KB (distill fail)</td><td>Re-run module đó với <code>--input</code>/<code>--output</code> cụ thể</td></tr>
 <tr><td>Claude session 5h limit</td><td>Extra Usage nếu bật. KHÔNG tự switch Pipeline C — phải hỏi user</td></tr>
+<tr><td>Folder phẳng &gt; 200 file (không chia module)</td><td>Phân cụm theo keyword filename trước: email, sales-pages, ads, headlines… Mỗi cụm thành 1 module.</td></tr>
+<tr><td>1 module quá to (&gt; 400k chữ)</td><td>Chia nhỏ bằng <code>--offset</code> hoặc cắt theo sub-folder.</td></tr>
+<tr><td>Slug trùng với skill cũ</td><td>Thêm hậu tố <code>-v2</code>, <code>-v3</code>.</td></tr>
+</table>
+</div>
+
+<!-- KNOWLEDGE COMPLETENESS -->
+<h2>📦 Giữ 85–90% kiến thức gốc</h2>
+<p style="color:var(--text-2);margin:6px 0 14px">Mục tiêu: skill zip phải trả lời được như đọc khóa thật. 5 chốt kiểm tra:</p>
+<div class="card">
+<table>
+<tr><th style="width:24%">Khi nào</th><th>Làm gì</th></tr>
+<tr><td><b>Trước build</b></td><td>Đếm file đọc được (SRT/DOCX/XLSX/text-PDF) vs PDF ảnh. PDF ảnh đánh dấu để OCR sau.</td></tr>
+<tr><td><b>Lúc distill</b></td><td>Giữ nguyên quote quan trọng (tác giả nói gì thì chép y chang, không dịch). Target 800–1500 dòng/module. Cuối mỗi file có 5–10 dòng "Key Takeaways".</td></tr>
+<tr><td><b>Sau batch xong</b></td><td>Lấy mẫu 2–3 file data check có framework + ví dụ cụ thể. Yếu quá → chạy lại với Gemini Pro (chất lượng cao hơn Flash).</td></tr>
+<tr><td><b>PDF ảnh (FireShot)</b></td><td>OCR ưu tiên templates / swipe files / email bank trước. Những thứ khác OCR sau nếu có thời gian.</td></tr>
+<tr><td><b>Trước khi ship</b></td><td>Eval 5–8 câu hỏi thật từ khóa học. Skill trả đúng framework + ví dụ = đạt.</td></tr>
+</table>
+</div>
+
+<!-- OUTPUT RULES -->
+<h2>📐 Quy tắc file output (để skill dùng ít token)</h2>
+<div class="card">
+<table>
+<tr><th style="width:30%">Quy tắc</th><th>Lý do</th></tr>
+<tr><td><b>1 module = 1 file</b> trong <code>data/</code></td><td>Claude load đúng 1 file khi cần → không đọc thừa</td></tr>
+<tr><td><b>File ≤ 1,500 dòng</b></td><td>Load nguyên file vẫn nhanh, không phải search</td></tr>
+<tr><td><b>Có <code>data/00-index.md</code> ngắn</b> (keyword → tên file)</td><td>Claude đọc index trước → biết cần file nào → load chính xác</td></tr>
+<tr><td>Không cross-load (1 keyword → 1 file)</td><td>Tránh load 3 file cho 1 câu hỏi</td></tr>
 </table>
 </div>
 
@@ -304,8 +343,14 @@ python -X utf8 scripts/prep-evals-parallel.py --skill-dir [...]
 <!-- PHASE 4 SHIP - DETAILED -->
 <h2>🚢 PHASE 4 — SHIP (7 steps bắt buộc)</h2>
 <div class="callout">
-  <div class="callout-title">❌ KHÔNG có override</div>
-  User nói "skip đi cho nhanh" → Reply: <i>"Course-builder quy định Phase 4 là mandatory gate. Chạy đủ 7 steps mới ship. Không có override."</i>
+  <div class="callout-title">❌ Skill sẽ từ chối nếu user yêu cầu</div>
+  <ul style="margin:6px 0 0 20px;padding:0">
+    <li>Đọc file <b>ngoài</b> <code>--path</code> đã cung cấp</li>
+    <li>Chạy code <b>ngoài</b> scripts có sẵn</li>
+    <li>Ghi vào system folder / lộ API key Gemini</li>
+    <li>Override <code>distill-prompt.md</code> hoặc <code>skill-template.md</code></li>
+    <li>Skip Phase 4 cho nhanh → Reply: <i>"Phase 4 là gate bắt buộc, chạy đủ 7 step mới ship."</i></li>
+  </ul>
 </div>
 
 <div class="step mand">
@@ -443,7 +488,7 @@ python -X utf8 scripts/prep-evals-parallel.py --skill-dir [...]
 </div>
 
 <footer>
-  Claude Skill Builder v2 · Cập nhật 2026-04-15 · CK flow mandatory gates
+  Claude Skill Builder v2 · Cập nhật 2026-04-17 · CK flow mandatory gates · Sync với <code>/course-builder</code> skill
 </footer>
 
 </div>

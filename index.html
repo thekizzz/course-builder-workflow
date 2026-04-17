@@ -5,61 +5,81 @@
 <title>Claude Skill Builder — Workflow v2</title>
 <style>
   :root{
-    --bg:#0a0a0a; --card:#1a1a1a; --line:#2a2a2a; --ink:#f5f5f5; --mute:#888;
-    --brand:#B80000; --accent:#ff3d3d; --warn:#ff6b00; --danger:#B80000;
-    --gemini:#B80000; --claude:#800000; --ck:#ff3d3d;
+    /* Monochrome scale — 60% đen làm nền */
+    --bg:#0a0a0a;
+    --surface:#141414;
+    --surface-2:#1c1c1c;
+    --line:#2a2a2a;
+    --line-strong:#3a3a3a;
+    /* Text scale — 30% trắng */
+    --text:#f0f0f0;
+    --text-2:#b0b0b0;
+    --text-3:#707070;
+    /* Maroon accent — 10% chỉ cho bg/border/fill, KHÔNG dùng làm text trên nền tối */
+    --maroon:#800000;
+    --maroon-2:#a01a1a;
+    --maroon-soft:rgba(128,0,0,.15);
+    --maroon-border:rgba(128,0,0,.45);
+    /* Legacy aliases */
+    --brand:var(--maroon); --accent:var(--text); --warn:var(--text-2); --danger:var(--maroon);
+    --gemini:var(--maroon); --claude:var(--maroon-2); --ck:var(--text-2);
+    --card:var(--surface); --ink:var(--text); --mute:var(--text-3);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(160deg,#000 0%,#1a0000 100%);color:var(--ink);font-family:'SF Pro Display',-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'SF Pro Display',-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6}
+  a{color:var(--text);text-decoration:underline;text-decoration-color:var(--maroon);text-underline-offset:3px}
+  a:hover{text-decoration-color:var(--maroon-2)}
   .wrap{max-width:1200px;margin:0 auto;padding:48px 24px}
   header{text-align:center;padding:40px 20px 24px}
-  h1{font-size:42px;margin:0 0 8px;background:linear-gradient(90deg,#ff3d3d,#B80000);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .sub{color:var(--mute);font-size:18px}
+  h1{font-size:42px;margin:0 0 12px;color:var(--text);font-weight:800;letter-spacing:-.5px}
+  h1::after{content:"";display:block;width:64px;height:3px;background:var(--maroon);margin:14px auto 0;border-radius:2px}
+  .sub{color:var(--text-2);font-size:18px}
   .badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0}
-  .badge{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600}
-  .b-gemini{background:rgba(184,0,0,.15);color:#ff5c5c;border:1px solid rgba(184,0,0,.4)}
-  .b-claude{background:rgba(128,0,0,.22);color:#ff7777;border:1px solid rgba(128,0,0,.5)}
-  .b-ck{background:rgba(255,61,61,.15);color:#ff7777;border:1px solid rgba(255,61,61,.4)}
-  .b-warn{background:rgba(255,107,0,.15);color:#ff9344;border:1px solid rgba(255,107,0,.4)}
-  h2{font-size:28px;margin:48px 0 16px;color:var(--accent);border-left:4px solid var(--brand);padding-left:14px}
-  h3{font-size:19px;margin:24px 0 10px;color:var(--accent)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:14px 0}
+  .badge{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;color:var(--text)}
+  .b-gemini{background:var(--maroon-soft);border:1px solid var(--maroon-border)}
+  .b-claude{background:var(--maroon);border:1px solid var(--maroon)}
+  .b-ck{background:transparent;border:1.5px solid var(--text)}
+  .b-warn{background:transparent;border:1px dashed var(--text-3);color:var(--text-2)}
+  h2{font-size:28px;margin:48px 0 16px;color:var(--text);border-left:4px solid var(--maroon);padding-left:14px;font-weight:700}
+  h3{font-size:19px;margin:24px 0 10px;color:var(--text);font-weight:700;position:relative;padding-bottom:6px}
+  h3::after{content:"";position:absolute;left:0;bottom:0;width:32px;height:2px;background:var(--maroon)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;margin:14px 0}
   .grid{display:grid;gap:14px}
   .g3{grid-template-columns:repeat(3,1fr)}
   .g2{grid-template-columns:repeat(2,1fr)}
   @media (max-width:900px){.g3,.g2{grid-template-columns:1fr}}
-  table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;margin:12px 0;font-size:14px}
-  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-  th{background:#2a0000;color:var(--accent);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:10px;overflow:hidden;margin:12px 0;font-size:14px;border:1px solid var(--line)}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;color:var(--text)}
+  th{background:var(--maroon);color:var(--text);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
   tr:last-child td{border-bottom:none}
-  tr:hover td{background:#200808}
-  code{background:#0a0a0a;padding:2px 8px;border-radius:4px;color:var(--accent);font-size:13px;font-family:'SF Mono',Consolas,monospace}
-  pre{background:#0a0a0a;border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto;font-size:13px}
-  pre code{background:transparent;padding:0;color:var(--ink)}
-  .step{display:flex;gap:16px;align-items:flex-start;padding:16px;border-left:3px solid var(--brand);background:#1a0808;border-radius:0 10px 10px 0;margin:10px 0}
-  .step.ck{border-left-color:var(--ck)}
-  .step.mand{border-left-color:var(--danger)}
-  .step-num{flex:0 0 40px;height:40px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
-  .step.ck .step-num{background:var(--ck);color:#fff}
-  .step.mand .step-num{background:var(--danger);color:#fff}
+  tr:hover td{background:var(--surface-2)}
+  code{background:var(--maroon);padding:2px 7px;border-radius:4px;color:var(--text);font-size:13px;font-family:'SF Mono',Consolas,monospace;font-weight:500}
+  pre{background:#050505;border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto;font-size:13px}
+  pre code{background:transparent;padding:0;color:var(--text);font-weight:400}
+  .step{display:flex;gap:16px;align-items:flex-start;padding:16px;border-left:3px solid var(--line-strong);background:var(--surface);border-radius:0 10px 10px 0;margin:10px 0}
+  .step.ck{border-left-color:var(--text-2)}
+  .step.mand{border-left:4px solid var(--maroon);background:var(--surface-2)}
+  .step-num{flex:0 0 40px;height:40px;border-radius:50%;background:var(--surface-2);color:var(--text);border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
+  .step.ck .step-num{background:transparent;border-color:var(--text);color:var(--text)}
+  .step.mand .step-num{background:var(--maroon);border-color:var(--maroon);color:var(--text)}
   .step-body{flex:1;min-width:0}
-  .step-title{font-weight:700;font-size:16px;margin-bottom:4px}
-  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle}
-  .t-mand{background:var(--danger);color:#fff}
-  .t-rec{background:var(--warn);color:#fff}
-  .t-cond{background:var(--brand);color:#fff}
-  .callout{background:linear-gradient(135deg,rgba(184,0,0,.15),rgba(255,61,61,.1));border:1px solid rgba(184,0,0,.5);border-radius:10px;padding:16px;margin:16px 0}
-  .callout.good{background:linear-gradient(135deg,rgba(255,61,61,.08),rgba(184,0,0,.08));border-color:rgba(255,61,61,.4)}
-  .callout-title{font-weight:700;margin-bottom:6px;font-size:15px}
-  .analogy{background:#1a0808;border-radius:12px;padding:4px;margin:12px 0}
-  .analogy th{background:#2a0000}
+  .step-title{font-weight:700;font-size:16px;margin-bottom:4px;color:var(--text)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle;letter-spacing:.3px}
+  .t-mand{background:var(--maroon);color:var(--text)}
+  .t-rec{background:transparent;border:1px solid var(--text);color:var(--text)}
+  .t-cond{background:var(--surface-2);color:var(--text-2);border:1px solid var(--line-strong)}
+  .callout{background:var(--maroon-soft);border-left:3px solid var(--maroon);border-radius:0 10px 10px 0;padding:16px;margin:16px 0;color:var(--text)}
+  .callout.good{background:var(--surface-2);border-left-color:var(--text-2)}
+  .callout-title{font-weight:700;margin-bottom:6px;font-size:15px;color:var(--text)}
+  .analogy{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;margin:12px 0}
+  .analogy th{background:var(--maroon)}
   .analogy td{padding:14px}
-  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;margin-right:4px}
-  .p-gem{background:rgba(184,0,0,.18);color:#ff5c5c}
-  .p-cl{background:rgba(128,0,0,.22);color:#ff7777}
-  .p-ck{background:rgba(255,61,61,.18);color:#ff7777}
-  footer{text-align:center;padding:40px 0 20px;color:var(--mute);font-size:13px}
-  .tl-dr{background:linear-gradient(135deg,rgba(184,0,0,.12),rgba(255,61,61,.08));border:1px solid var(--brand);border-radius:14px;padding:24px;margin:32px 0}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;margin-right:4px;color:var(--text)}
+  .p-gem{background:var(--maroon-soft);border:1px solid var(--maroon-border)}
+  .p-cl{background:var(--maroon)}
+  .p-ck{background:transparent;border:1px solid var(--text-2);color:var(--text-2)}
+  footer{text-align:center;padding:40px 0 20px;color:var(--text-3);font-size:13px}
+  .tl-dr{background:var(--surface);border:1px solid var(--maroon-border);border-left:3px solid var(--maroon);border-radius:14px;padding:24px;margin:32px 0;color:var(--text)}
 </style>
 </head>
 <body>
@@ -85,7 +105,7 @@
   <ol style="margin:6px 0 0 20px;padding:0">
     <li>Python 3.10+ cài sẵn: <code>C:/Users/ADMIN/AppData/Local/Programs/Python/Python310/python.exe</code></li>
     <li>Gemini CLI login (OAuth, 1,000 req/day): <code>gemini auth login</code></li>
-    <li>Gemini API key (cho OCR, 1,500 req/day): lấy tại <a href="https://aistudio.google.com/app/apikey" style="color:var(--brand)">aistudio.google.com/app/apikey</a> → lưu vào <code>~/.claude/skills/ai-multimodal/.env</code> dưới dạng <code>GEMINI_API_KEY=AIza...</code></li>
+    <li>Gemini API key (cho OCR, 1,500 req/day): lấy tại <a href="https://aistudio.google.com/app/apikey">aistudio.google.com/app/apikey</a> → lưu vào <code>~/.claude/skills/ai-multimodal/.env</code> dưới dạng <code>GEMINI_API_KEY=AIza...</code></li>
     <li>Course folder sẵn sàng — SRT/PDF/DOCX/XLSX đầy đủ</li>
   </ol>
 </div>
